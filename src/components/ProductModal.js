@@ -4,10 +4,19 @@ import { Circles } from "react-loader-spinner";
 import { ReactComponent as Close } from "../assets/close.svg";
 import { ReactComponent as Search } from "../assets/search.svg";
 
-const ProductModal = ({ productsField, setProductsField, setmodal }) => {
+import { Checkbox } from "./Checkbox";
+
+const ProductModal = ({
+  productsField,
+  setProductsField,
+  setmodal,
+  pIndex,
+}) => {
   const [productData, setProductData] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState([]);
+  const [pickedProducts, setPickedProducts] = useState(productsField);
 
   useEffect(() => {
     if (page === 1) {
@@ -24,8 +33,8 @@ const ProductModal = ({ productsField, setProductsField, setmodal }) => {
         let newitems = await axios.get(
           `https://stageapibc.monkcommerce.app/admin/shop/product?search=${search}&page=${page}`
         );
-        if(newitems.length > 1) newitems?.data?.map((data)=> setProductData([...productData, data]) )
-        ;
+        if (newitems.length > 1)
+          newitems?.data?.map((data) => setProductData([...productData, data]));
       };
       fetchData();
     }
@@ -42,6 +51,28 @@ const ProductModal = ({ productsField, setProductsField, setmodal }) => {
       setPage(page + 1);
     }
   };
+
+  const handleSelectProduct = ({ data, idx, temp }) => {
+    console.log(data, idx);
+    console.log(temp);
+
+    let newArray = [...pickedProducts];
+    newArray[pIndex] = data;
+    setPickedProducts(newArray);
+
+    if (temp) {
+      let newArray = [...pickedProducts];
+      let temparr = data?.variants?.filter((x) => temp?.includes(x.id));
+      newArray[pIndex] = { ...newArray[pIndex], variants: temparr };
+      setPickedProducts(newArray);
+    }
+  };
+
+  const handleAdd = () => {
+    setProductsField(pickedProducts);
+    setmodal(false);
+  };
+  console.log(pickedProducts, "main");
 
   console.log(productData);
 
@@ -81,13 +112,26 @@ const ProductModal = ({ productsField, setProductsField, setmodal }) => {
             />
           ) : (
             productData.map((data, index) => {
+              let list = data?.variants?.map((newdata) => {
+                return newdata.id;
+              });
               return (
                 <div className="flex flex-col">
                   <div className="flex items-center my-2">
-                    <input
-                      type="checkbox"
-                      className="h-5 w-5 mr-2 accent-primary"
-                    />{" "}
+                    <Checkbox
+                      checked={selected[0] === list[0]}
+                      indeterminate={
+                        selected.length > 0 && selected.length < list.length
+                      }
+                      onChange={(event) => {
+                        handleSelectProduct({ data: data, idx: index });
+                        if (event.target.checked) {
+                          setSelected(list);
+                        } else {
+                          setSelected([]);
+                        }
+                      }}
+                    />
                     <img
                       src={data?.image?.src}
                       alt="product"
@@ -98,10 +142,23 @@ const ProductModal = ({ productsField, setProductsField, setmodal }) => {
                   {data?.variants?.map((vardata, index) => {
                     return (
                       <div className="flex pl-8 items-center border-t-2">
-                        <input
-                          type="checkbox"
-                          className="h-5 w-5 mr-2 accent-primary"
-                        />{" "}
+                        <Checkbox
+                          checked={selected.includes(vardata?.id)}
+                          onChange={() => {
+                            if (selected.includes(vardata?.id)) {
+                              var temp = selected.filter(
+                                (i) => i !== vardata?.id
+                              );
+                              setSelected(temp);
+                              // setSelected((s) =>
+                              //   s.filter((i) => i !== vardata?.id)
+                              // );
+                            } else {
+                              setSelected((s) => [...s, vardata?.id]);
+                            }
+                            handleSelectProduct({ temp: temp, data: data });
+                          }}
+                        />
                         <div className="flex w-full justify-between ml-2 py-2">
                           <span className="w-1/3">{vardata?.title}</span>
                           <span>{vardata?.inventory_quantity}</span>
@@ -125,7 +182,10 @@ const ProductModal = ({ productsField, setProductsField, setmodal }) => {
           >
             Cancel
           </button>
-          <button className="outline-none border-none px-4 py-0.5 ml-2 bg-primary text-white rounded-sm">
+          <button
+            onClick={handleAdd}
+            className="outline-none border-none px-4 py-0.5 ml-2 bg-primary text-white rounded-sm"
+          >
             Add
           </button>
         </div>
