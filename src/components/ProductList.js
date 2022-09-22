@@ -3,6 +3,7 @@ import ProductModal from "./ProductModal";
 import { ReactComponent as MonkLogo } from "../assets/monklogo.svg";
 import { ReactComponent as Edit } from "../assets/edit.svg";
 import { ReactComponent as Drag } from "../assets/drag.svg";
+import { ReactComponent as Remove } from "../assets/close.svg";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const ProductList = () => {
@@ -85,6 +86,26 @@ const ProductList = () => {
 
       let newArray = [...productsField];
       newArray[index] = { ...newArray[index], variants: items };
+      setProductsField(newArray);
+    }
+  };
+
+  ///////////
+  //// removing varients from the array
+  //////////
+
+  const handleVariantDelete = (id) => {
+    //// extracting variants
+    let temp = productsField.map((temp1, idx) => {
+      if (indextemp === idx) return temp1?.variants;
+    });
+    ////filtering
+    let removedVar = temp[0].filter((x) => x.id !== id);
+
+    //// reassigning new array :)
+    if (removedVar) {
+      let newArray = [...productsField];
+      newArray[indextemp] = { ...newArray[indextemp], variants: removedVar };
       setProductsField(newArray);
     }
   };
@@ -196,7 +217,7 @@ const ProductList = () => {
                               </div>
 
                               {data && data?.variants?.length > 1 && (
-                                <divc className="flex w-full justify-end">
+                                <div className="flex w-full justify-end">
                                   <button
                                     className="text-blue-500 font-semibold outline-none bg-none w-32 mt-2"
                                     onClick={() => handlevarinttoggle(index)}
@@ -205,7 +226,7 @@ const ProductList = () => {
                                       ? "- hide variants"
                                       : "+ show variants"}
                                   </button>
-                                </divc>
+                                </div>
                               )}
                               {data &&
                                 data?.title &&
@@ -266,6 +287,16 @@ const ProductList = () => {
                                                                 </option>
                                                               </select>
                                                             </div>
+                                                            <button
+                                                              onClick={() =>
+                                                                handleVariantDelete(
+                                                                  vardata?.id
+                                                                )
+                                                              }
+                                                              className="mx-2"
+                                                            >
+                                                              <Remove className="h-2" />
+                                                            </button>
                                                           </div>
                                                         )}
                                                       </Draggable>
