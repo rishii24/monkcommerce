@@ -43,17 +43,35 @@ const ProductList = () => {
     setindextemp(result.destination.index);
     console.log(result);
   };
+  //////////
+  //// to handle the variants drag and drop rearrangement 
+  /////////
 
-  const handleChildOnDragEnd = (result) => {
-    // if (!result.destination) return;
-    // const items = Array.from(productsField);
-    // const [reorderedItem] = items.splice(result.source.index, 1);
-    // items.splice(result.destination.index, 0, reorderedItem);
-    // setProductsField(items);
-    console.log(result);
+  const handleChildOnDragEnd = ({ result, index }) => {
+
+    //// extracting variants array
+    let temp = productsField.map((temp1, idx) => {
+      if (idx === index) return temp1?.variants;
+      else return;
+    });
+
+    if (!result.destination) return;
+    if (temp) {
+      const items = Array.from(temp[0]);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+
+      /////
+      // to array modified after drag and drop
+      //////
+
+      let newArray = [...productsField];
+      newArray[index] = { ...newArray[index], variants: items };
+      setProductsField(newArray);
+    }
   };
 
-  console.log(indextemp, "outer");
+  console.log(productsField, "outer");
 
   return (
     <div className="flex flex-col">
@@ -169,7 +187,12 @@ const ProductList = () => {
                                 togglevarients && (
                                   <div className="flex flex-col text-sm overflow-y-auto h-32 w-3/4 ml-10 my-4">
                                     <DragDropContext
-                                      onDragEnd={handleChildOnDragEnd}
+                                      onDragEnd={(result) =>
+                                        handleChildOnDragEnd({
+                                          result: result,
+                                          index: index,
+                                        })
+                                      }
                                     >
                                       <Droppable droppableId="droppable">
                                         {(provided) => (
