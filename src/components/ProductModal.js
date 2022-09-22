@@ -53,9 +53,6 @@ const ProductModal = ({
   };
 
   const handleSelectProduct = ({ data, idx, temp }) => {
-    console.log(data, idx);
-    console.log(temp);
-
     let newArray = [...pickedProducts];
     newArray[pIndex] = data ;
     setPickedProducts(newArray);
@@ -72,10 +69,7 @@ const ProductModal = ({
     setProductsField(pickedProducts);
     setmodal(false);
   };
-  console.log(pickedProducts, "main");
-
-  console.log(productData);
-
+ 
   return (
     <div>
       <div className="flex flex-col absolute left-16 md:left-28 lg:left-64 top-12 bottom-8 rounded-sm bg-white border border-1 z-50 w-2/3">

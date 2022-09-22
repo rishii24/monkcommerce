@@ -60,7 +60,6 @@ const ProductList = () => {
     items.splice(result.destination.index, 0, reorderedItem);
     setProductsField(items);
     setindextemp(result.destination.index);
-    console.log(result);
   };
 
   //////////
