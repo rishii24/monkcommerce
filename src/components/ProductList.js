@@ -82,7 +82,7 @@ const ProductList = () => {
                         >
                           {(provided) => (
                             <div
-                              className="flex flex-col mt-5"
+                              className="flex flex-col mt-8 mb-4 pb-8 border-b-2 w-2/3"
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                               ref={provided.innerRef}
@@ -102,13 +102,13 @@ const ProductList = () => {
                                     </button>
                                   </div>
                                 ) : (
-                                  <div className="flex px-2 py-1 bg-white items-center shadow-sm border text-sm">
+                                  <div className="flex px-2 py-1 w-1/3 justify-between bg-white items-center shadow-sm border text-sm">
                                     <input
                                       type="text"
                                       value={data?.name}
                                       placeholder="Select Product"
                                       disabled
-                                      className="bg-white"
+                                      className="bg-white text-sm whitespace-nowrap overflow-hidden"
                                     />
                                     <button onClick={() => handleModal(index)}>
                                       <Edit />
@@ -149,81 +149,87 @@ const ProductList = () => {
                               </div>
 
                               {data && data?.variants?.length > 1 && (
-                                <button
-                                  className="text-blue-400 outline-none bg-none place-self-end"
-                                  onClick={() => {
-                                    settogglevarients(!togglevarients);
-                                    setindextemp(index);
-                                  }}
-                                >
-                                  {togglevarients && index === indextemp
-                                    ? "hide varients"
-                                    : "show varients"}
-                                </button>
-                              )}
-                              {data && data?.title && index === indextemp && (
-                                <div className="flex flex-col text-sm overflow-y-auto h-32 w-1/2 pl-10 my-4 ml-24">
-                                  <DragDropContext
-                                    onDragEnd={handleChildOnDragEnd}
+                                <divc className="flex w-full justify-end">
+                                  <button
+                                    className="text-blue-500 font-semibold outline-none bg-none w-32 mt-2"
+                                    onClick={() => {
+                                      settogglevarients(!togglevarients);
+                                      setindextemp(index);
+                                    }}
                                   >
-                                    <Droppable droppableId="droppable">
-                                      {(provided) => (
-                                        <div
-                                          {...provided.droppableProps}
-                                          ref={provided.innerRef}
-                                        >
-                                          {togglevarients && index === indextemp
-                                            ? data?.variants?.map(
-                                                (vardata, index) => {
-                                                  return (
-                                                    <Draggable
-                                                      index={index}
-                                                      key={index}
-                                                      draggableId={index.toString()}
-                                                    >
-                                                      {(provided) => (
-                                                        <div
-                                                          className="flex items-center ml-2 py-2"
-                                                          {...provided.draggableProps}
-                                                          {...provided.dragHandleProps}
-                                                          ref={
-                                                            provided.innerRef
-                                                          }
-                                                        >
-                                                          <Drag />
-                                                          <span className="flex px-2 py-1 ml-4 bg-white items-center shadow-lg rounded-xl border w-1/3">
-                                                            {vardata?.title}
-                                                          </span>
-                                                          <div className="flex ml-4 w-2/3 justify-around items-center">
-                                                            <input
-                                                              type="text"
-                                                              placeholder="Discount"
-                                                              className="px-2 py-1 bg-white items-center shadow-sm border text-sm rounded-xl"
-                                                            />
-                                                            <select className="px-2 py-1 border text-sm rounded-xl">
-                                                              <option>
-                                                                {" "}
-                                                                % off
-                                                              </option>
-                                                              <option>
-                                                                {" "}
-                                                                flat off
-                                                              </option>
-                                                            </select>
-                                                          </div>
-                                                        </div>
-                                                      )}
-                                                    </Draggable>
-                                                  );
-                                                }
-                                              )
-                                            : ""}
-                                        </div>
-                                      )}
-                                    </Droppable>
-                                  </DragDropContext>
-                                </div>
+                                    {togglevarients && index === indextemp
+                                      ? "- hide variants"
+                                      : "+ show variants"}
+                                  </button>
+                                </divc>
                               )}
+                              {data &&
+                                data?.title &&
+                                index === indextemp &&
+                                togglevarients && (
+                                  <div className="flex flex-col text-sm overflow-y-auto h-32 w-3/4 ml-10 my-4">
+                                    <DragDropContext
+                                      onDragEnd={handleChildOnDragEnd}
+                                    >
+                                      <Droppable droppableId="droppable">
+                                        {(provided) => (
+                                          <div
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                          >
+                                            {togglevarients &&
+                                            index === indextemp
+                                              ? data?.variants?.map(
+                                                  (vardata, index) => {
+                                                    return (
+                                                      <Draggable
+                                                        index={index}
+                                                        key={index}
+                                                        draggableId={index.toString()}
+                                                      >
+                                                        {(provided) => (
+                                                          <div
+                                                            className="flex items-center ml-2 my-2 py-2"
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            ref={
+                                                              provided.innerRef
+                                                            }
+                                                          >
+                                                            <Drag />
+                                                            <span className="flex px-2 py-1 ml-4 bg-white items-center shadow-lg rounded-xl border w-1/3">
+                                                              {vardata?.title}
+                                                            </span>
+                                                            <div className="flex ml-4 w-2/3 justify-around items-center">
+                                                              <input
+                                                                type="text"
+                                                                placeholder="Discount"
+                                                                className="px-2 py-1 bg-white items-center shadow-sm border text-sm rounded-xl"
+                                                              />
+                                                              <select className="px-2 py-1 border text-sm rounded-xl">
+                                                                <option>
+                                                                  {" "}
+                                                                  % off
+                                                                </option>
+                                                                <option>
+                                                                  {" "}
+                                                                  flat off
+                                                                </option>
+                                                              </select>
+                                                            </div>
+                                                          </div>
+                                                        )}
+                                                      </Draggable>
+                                                    );
+                                                  }
+                                                )
+                                              : ""}
+                                          </div>
+                                        )}
+                                      </Droppable>
+                                    </DragDropContext>
+                                  </div>
+                                )}
                             </div>
                           )}
                         </Draggable>
