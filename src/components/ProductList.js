@@ -29,10 +29,29 @@ const ProductList = () => {
     ]);
   };
 
+  ////////
+  ////    adding discount to product
+  ////////
+  const handleDiscount = (e, index) => {
+    let { name, value } = e.target;
+    let newArray = [...productsField];
+    newArray[index] = { ...newArray[index], [name]: value };
+    setProductsField(newArray);
+  };
+
   const handleModal = (idx) => {
     setmodal(!modal);
     setindextemp(idx);
   };
+
+  const handlevarinttoggle = (index) => {
+    settogglevarients(!togglevarients);
+    setindextemp(index);
+  };
+
+  //////////
+  //// to handle the products drag and drop rearrangement
+  /////////
 
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
@@ -43,12 +62,12 @@ const ProductList = () => {
     setindextemp(result.destination.index);
     console.log(result);
   };
+
   //////////
-  //// to handle the variants drag and drop rearrangement 
+  //// to handle the variants drag and drop rearrangement
   /////////
 
   const handleChildOnDragEnd = ({ result, index }) => {
-
     //// extracting variants array
     let temp = productsField.map((temp1, idx) => {
       if (idx === index) return temp1?.variants;
@@ -155,12 +174,23 @@ const ProductList = () => {
                                     <input
                                       type="text"
                                       value={data?.discount}
+                                      onChange={(e) => handleDiscount(e, index)}
+                                      name="discount"
                                       placeholder="Discount"
-                                      className="px-2 py-1 bg-white items-center shadow-sm border text-sm"
+                                      className="px-2 py-1 bg-white items-center shadow-sm border text-sm outline-none"
                                     />
-                                    <select className="px-2 py-1 border text-sm">
-                                      <option> % off</option>
-                                      <option> flat off</option>
+                                    <select
+                                      className="px-2 py-1 border text-sm outline-none"
+                                      name="typeofdis"
+                                      value={data?.typeofdis}
+                                      onChange={(e) => handleDiscount(e, index)}
+                                    >
+                                      <option hidden></option>
+                                      <option value="% off"> % off</option>
+                                      <option value="flat off">
+                                        {" "}
+                                        flat off
+                                      </option>
                                     </select>
                                   </div>
                                 </div>
@@ -170,10 +200,7 @@ const ProductList = () => {
                                 <divc className="flex w-full justify-end">
                                   <button
                                     className="text-blue-500 font-semibold outline-none bg-none w-32 mt-2"
-                                    onClick={() => {
-                                      settogglevarients(!togglevarients);
-                                      setindextemp(index);
-                                    }}
+                                    onClick={() => handlevarinttoggle(index)}
                                   >
                                     {togglevarients && index === indextemp
                                       ? "- hide variants"
@@ -223,13 +250,13 @@ const ProductList = () => {
                                                             <span className="flex px-2 py-1 ml-4 bg-white items-center shadow-lg rounded-xl border w-1/3">
                                                               {vardata?.title}
                                                             </span>
-                                                            <div className="flex ml-4 w-2/3 justify-around items-center">
+                                                            <div className="flex ml-4 w-2/3 justify-around items-center ">
                                                               <input
                                                                 type="text"
                                                                 placeholder="Discount"
-                                                                className="px-2 py-1 bg-white items-center shadow-sm border text-sm rounded-xl"
+                                                                className="px-2 py-1 bg-white items-center shadow-sm border text-sm rounded-xl outline-none"
                                                               />
-                                                              <select className="px-2 py-1 border text-sm rounded-xl">
+                                                              <select className="px-2 py-1 border text-sm rounded-xl outline-none">
                                                                 <option>
                                                                   {" "}
                                                                   % off
