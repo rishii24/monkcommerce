@@ -57,7 +57,7 @@ const ProductModal = ({
     console.log(temp);
 
     let newArray = [...pickedProducts];
-    newArray[pIndex] = data;
+    newArray[pIndex] = data ;
     setPickedProducts(newArray);
 
     if (temp) {
